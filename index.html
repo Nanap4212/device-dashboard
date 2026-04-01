@@ -32,7 +32,10 @@ th, td {
 
 th { background:#1e293b; color:white; }
 
-.assigned { color:green; font-weight:bold; }
+.notuse {
+  color: #dc2626;
+  font-weight: bold;
+}
 </style>
 </head>
 
@@ -89,12 +92,15 @@ async function loadDevices() {
   const data = await res.json();
 
   let html = "";
+
   data.forEach(d => {
     html += `
     <tr>
       <td>${d.device_name}</td>
-      <td>${d.employee_name}</td>
-      <td class="assigned">${d.status}</td>
+      <td>${d.employee_name || "-"}</td>
+      <td class="${d.status === "ASSIGNED" ? "assigned" : "notuse"}">
+        ${d.status}
+      </td>
     </tr>`;
   });
 

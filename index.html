@@ -43,6 +43,15 @@ th { background:#1e293b; color:white; }
 
 <h1>📊 Device Tracker Pro</h1>
 
+
+<h2>📱 Active Devices</h2>
+<table>
+<thead>
+<tr><th>Device</th><th>Employee</th><th>Status</th></tr>
+</thead>
+<tbody id="deviceTable"></tbody>
+</table>
+
 <div class="controls">
   🔍 <input type="text" id="search" placeholder="Search employee/device">
   
@@ -52,14 +61,6 @@ th { background:#1e293b; color:white; }
   <button onclick="loadHistory()">Filter</button>
   <button onclick="exportCSV()">Export CSV</button>
 </div>
-
-<h2>📱 Active Devices</h2>
-<table>
-<thead>
-<tr><th>Device</th><th>Employee</th><th>Status</th></tr>
-</thead>
-<tbody id="deviceTable"></tbody>
-</table>
 
 <h2>📜 History</h2>
 <table>

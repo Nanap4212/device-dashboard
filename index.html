@@ -142,21 +142,12 @@
       <th>Employee</th>
       <th>Login</th>
       <th>Logout</th>
+      <th>Total Usage</th>
     </tr>
   </thead>
   <tbody id="historyTable"></tbody>
 </table>
 
-<h2>📊 Report</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Employee</th>
-      <th>Total Usage</th>
-    </tr>
-  </thead>
-  <tbody id="reportTable"></tbody>
-</table>
 
 <script>
 const BASE_URL = "https://device-tracker-eu6f.onrender.com";
@@ -172,42 +163,28 @@ function loadAll() {
 }
 
 // ================= DEVICES =================
-async function loadDevices() {
+async function loadHistory() {
   try {
-    const res = await fetch(BASE_URL + "/devices");
+    const res = await fetch(BASE_URL + "/history");
     const data = await res.json();
 
-    const tbody = document.getElementById("deviceTable");
+    const tbody = document.getElementById("historyTable");
     tbody.innerHTML = "";
 
-    let active = 0;
-    let employees = new Set();
-
     data.forEach(d => {
-      if (d.status === "ASSIGNED") {
-        active++;
-        if (d.employee_name) employees.add(d.employee_name);
-      }
-
       tbody.innerHTML += `
         <tr>
-          <td>${d.device_name || "-"}</td>
-          <td>${d.employee_name || "-"}</td>
-          <td>
-            <span class="status ${d.status === "ASSIGNED" ? "assigned":"idle"}">
-              ${d.status}
-            </span>
-          </td>
+          <td>${d.device_name}</td>
+          <td>${d.employee_name}</td>
+          <td>${formatTime(d.login_time)}</td>
+          <td>${d.logout_time ? formatTime(d.logout_time) : "-"}</td>
+          <td>${d.usage}</td>
         </tr>
       `;
     });
 
-    document.getElementById("activeCount").innerText = active;
-    document.getElementById("totalCount").innerText = data.length;
-    document.getElementById("employeeCount").innerText = employees.size;
-
   } catch (err) {
-    console.log("Device Error:", err);
+    console.log("History Error:", err);
   }
 }
 

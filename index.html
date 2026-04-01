@@ -17,6 +17,17 @@ th { background:#1e293b; color:white; }
 .assigned { color:green; font-weight:bold; }
 
 .controls { text-align:center; margin:15px; }
+
+button {
+  padding:5px 10px;
+  margin:2px;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+.ring { background:green; color:white; }
+.stop { background:red; color:white; }
 </style>
 </head>
 
@@ -27,7 +38,12 @@ th { background:#1e293b; color:white; }
 <h2>📱 Devices</h2>
 <table>
 <thead>
-<tr><th>Device</th><th>Employee</th><th>Status</th></tr>
+<tr>
+  <th>Device</th>
+  <th>Employee</th>
+  <th>Status</th>
+  <th>Action</th>
+</tr>
 </thead>
 <tbody id="deviceTable"></tbody>
 </table>
@@ -71,7 +87,7 @@ function loadAll() {
   loadHistory();
 }
 
-// DEVICES
+// ================= DEVICES =================
 async function loadDevices() {
   const res = await fetch(BASE + "/devices");
   const data = await res.json();
@@ -89,13 +105,17 @@ async function loadDevices() {
       <td class="${d.status === "ASSIGNED" ? "assigned":"notuse"}">
         ${d.status}
       </td>
+      <td>
+        <button class="ring" onclick="ringDevice('${d.device_id}')">🔊 Ring</button>
+        <button class="stop" onclick="stopRing('${d.device_id}')">🛑 Stop</button>
+      </td>
     </tr>`;
   });
 
   document.getElementById("deviceTable").innerHTML = html;
 }
 
-// HISTORY
+// ================= HISTORY =================
 async function loadHistory() {
   const search = document.getElementById("search").value;
   const start = document.getElementById("start").value;
@@ -124,7 +144,7 @@ async function loadHistory() {
   document.getElementById("historyTable").innerHTML = html;
 }
 
-// QR
+// ================= QR =================
 function showQR(id, name) {
   document.getElementById("qrModal").style.display = "flex";
   document.getElementById("qrTitle").innerText = name;
@@ -135,9 +155,31 @@ function closeQR() {
   document.getElementById("qrModal").style.display = "none";
 }
 
-// EXPORT
+// ================= EXPORT =================
 function exportCSV() {
   window.open(BASE + "/export");
+}
+
+// ================= RING =================
+async function ringDevice(id) {
+  await fetch(BASE + "/ring-device", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ device_id: id })
+  });
+
+  alert("🔊 Ring command sent");
+}
+
+// ================= STOP =================
+async function stopRing(id) {
+  await fetch(BASE + "/stop-ring", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ device_id: id })
+  });
+
+  alert("🛑 Stop command sent");
 }
 
 function format(date) {
